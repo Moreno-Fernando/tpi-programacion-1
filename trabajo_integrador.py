@@ -1,3 +1,25 @@
+import os
+
+
+def cargar_datos():
+    pass
+
+def mostrar_menu():
+    pass
+
+def menu_buscar():
+    pass
+
+def menu_filtrar():
+    pass
+
+def menu_ordenar():
+    pass
+
+def menu_estadisticas():
+    pass
+
+
 def principal():
     if not os.path.exists("paises.csv"):
         print(f"Archivo requerido no encontrado: 'paises.csv'. Debe proporcionarlo antes de ejecutar.")
