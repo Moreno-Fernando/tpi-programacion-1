@@ -1,5 +1,19 @@
 import os
 
+paises = []
+
+def linea_separadora():
+    return print("-" * 80)
+
+# funciones de validacion
+def es_entero(a):
+    a = a.strip()
+    return a.isdigit()
+
+def es_float(a):
+    a = a.strip()
+    float(a)
+    return True
 
 def cargar_datos():
     pass
