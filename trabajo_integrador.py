@@ -1,4 +1,5 @@
 import os
+import unicodedata
 
 paises = []
 
@@ -14,6 +15,13 @@ def es_float(a):
     a = a.strip()
     float(a)
     return True
+
+def normalizar_texto(t):
+    if not t:
+        return ""
+    texto_normal = unicodedata.normalize('NFKD', t)
+    texto_sin_acentos = ''.join(c for c in texto_normal if not unicodedata.combining(c))
+    return texto_sin_acentos.strip().lower()
 
 def cargar_datos():
     pass
