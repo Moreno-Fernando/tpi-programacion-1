@@ -40,7 +40,7 @@ def cargar_datos():
         print("Error: El archivo 'paises.csv' no existe. Coloque el CSV en la misma carpeta y vuelva a ejecutar.")
         return False
 
-    with open("paises.csv") as archivo:
+    with open("paises.csv", encoding="utf-8") as archivo:
         lineas = [linea.strip() for linea in archivo.readlines() if linea.strip()]
 
         if not lineas:
@@ -60,8 +60,6 @@ def cargar_datos():
         indice_poblacion = encabezado.index('poblacion')
         indice_superficie = encabezado.index('superficie')
         indice_continente = encabezado.index('continente')
-
-        paises = []
 
         # Procesar las filas, desde la segunda linea
         for num_linea, linea in enumerate(lineas[1:], 2):
@@ -104,25 +102,110 @@ def cargar_datos():
         return True
     
 def buscar_pais_por_nombre(nombre, exacta):
-    pass
-
+    # Buscamos paises por nombre (coincidencia parcial o exacta)
+    if not paises:
+        return []
+ 
+    nombre = normalizar_texto(nombre)
+    resultados = []
+ 
+    for pais in paises:
+        nombre_pais = normalizar_texto(pais['nombre'])
+        if exacta:
+            if nombre_pais == nombre:
+                resultados.append(pais)
+        else:
+            if nombre in nombre_pais:
+                resultados.append(pais)
+ 
+    return resultados
+ 
 def filtrar_por_continente(continente):
-    pass
-
+    # Filtra paises por continente
+    if not paises:
+        return []
+    continente = normalizar_texto(continente)
+    return [pais for pais in paises if normalizar_texto(pais['continente']) == continente]
+ 
 def filtrar_por_rango_poblacion(min_poblacion, max_poblacion):
-    pass
-
+    # Filtra paises por rango de poblacion
+    if not paises:
+        return []
+ 
+    min_val = int(min_poblacion) if min_poblacion is not None else 0
+    max_val = int(max_poblacion) if max_poblacion is not None else float('inf')
+ 
+    return [pais for pais in paises if min_val <= pais['poblacion'] <= max_val]
+ 
 def filtrar_por_rango_superficie(min_superficie, max_superficie):
-    pass
-
+    # Filtra paises por rango de superficie
+    if not paises:
+        return []
+ 
+    min_val = float(min_superficie) if min_superficie is not None else 0.0
+    max_val = float(max_superficie) if max_superficie is not None else float('inf')
+ 
+    return [pais for pais in paises if min_val <= pais['superficie'] <= max_val]
+ 
 def ordenar_paises(criterio, tipo):
-    pass
-
+    # Ordena paises por nombre, poblacion o superficie
+    if not paises:
+        return []
+ 
+    funciones_clave = {
+        'nombre': clave_nombre,
+        'poblacion': clave_poblacion,
+        'superficie': clave_superficie
+    }
+    if criterio not in funciones_clave:
+        print(f"Error: Criterio '{criterio}' no valido.")
+        return paises.copy()
+ 
+    clave_func = funciones_clave[criterio]
+    paises_ordenados = sorted(paises, key=clave_func, reverse=not tipo)
+    return paises_ordenados
+ 
 def mostrar_estadisticas():
-    pass
-
+    # Calcula y retorna estadisticas de los paises
+    if not paises:
+        return {}
+ 
+    pais_max_poblacion = max(paises, key=clave_poblacion)
+    pais_min_poblacion = min(paises, key=clave_poblacion)
+ 
+    total_poblacion = sum(p['poblacion'] for p in paises)
+    total_superficie = sum(p['superficie'] for p in paises)
+    promedio_poblacion = total_poblacion / len(paises)
+    promedio_superficie = total_superficie / len(paises)
+ 
+    paises_por_continente = {}
+    for p in paises:
+        cont = p['continente']
+        paises_por_continente[cont] = paises_por_continente.get(cont, 0) + 1
+ 
+    estadisticas = {
+        'pais_mayor_poblacion': pais_max_poblacion,
+        'pais_menor_poblacion': pais_min_poblacion,
+        'promedio_poblacion': promedio_poblacion,
+        'promedio_superficie': promedio_superficie,
+        'paises_por_continente': paises_por_continente,
+        'total_paises': len(paises)
+    }
+    return estadisticas
+ 
 def mostrar_paises(lista_paises, titulo):
-    pass
+    # Muestra una lista de paises formateada
+    if not lista_paises:
+        print("No se encontraron paises que coincidan con los criterios.")
+        return
+ 
+    print(f"\nResultados ({len(lista_paises)} paises encontrados):")
+    linea_separadora
+    print(f"{'Nombre':<20} {'Población':<15} {'Superficie':<15} {'Continente':<15}")
+    linea_separadora
+    for pais in lista_paises:
+        print(f"{pais['nombre']:<20} {pais['poblacion']:<15,} {pais['superficie']:<15,.2f} {pais['continente']:<15}")
+    linea_separadora()
 
 def mostrar_menu():
     linea_separadora()
