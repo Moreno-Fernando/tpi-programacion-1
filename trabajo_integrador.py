@@ -1,8 +1,6 @@
 import os
 import unicodedata
 
-paises = []
-
 def linea_separadora():
     return print("-" * 80)
 
@@ -40,6 +38,8 @@ def cargar_datos():
         print("Error: El archivo 'paises.csv' no existe. Coloque el CSV en la misma carpeta y vuelva a ejecutar.")
         return False
 
+    paises = []
+    
     with open("paises.csv", encoding="utf-8") as archivo:
         lineas = [linea.strip() for linea in archivo.readlines() if linea.strip()]
 
